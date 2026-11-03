@@ -408,7 +408,8 @@ class API:
             if percent == self._gpx_pct.get(udid):
                 return
             self._gpx_pct[udid] = percent
-            self._js(_js_call("updateGpxDeviceProgress", udid, sent, total))
+            # Numbers must stay numeric: _js_call() quotes every argument.
+            self._js(f"updateGpxDeviceProgress({json.dumps(udid)}, {sent}, {total})")
 
         def _worker():
             import concurrent.futures
