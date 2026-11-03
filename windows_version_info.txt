@@ -1,0 +1,28 @@
+# UTF-8
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    filevers=(1, 0, 0, 0),
+    prodvers=(1, 0, 0, 0),
+    mask=0x3f,
+    flags=0x0,
+    OS=0x40004,
+    fileType=0x1,
+    subtype=0x0,
+    date=(0, 0)
+  ),
+  kids=[
+    StringFileInfo([
+      StringTable('040904B0', [
+        StringStruct('CompanyName', 'CampusRunning'),
+        StringStruct('FileDescription', 'CampusRunning multi-device iPhone GPS trajectory sync'),
+        StringStruct('FileVersion', '1.0.0.0'),
+        StringStruct('InternalName', 'CampusRunning'),
+        StringStruct('LegalCopyright', 'MIT License - based on FakeGPS by sunzhengnan'),
+        StringStruct('OriginalFilename', 'CampusRunning.exe'),
+        StringStruct('ProductName', 'CampusRunning'),
+        StringStruct('ProductVersion', '1.0.0.0')
+      ])
+    ]),
+    VarFileInfo([VarStruct('Translation', [1033, 1200])])
+  ]
+)

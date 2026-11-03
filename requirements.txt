@@ -1,0 +1,12 @@
+# pymobiledevice3 11.45.0+ is required for iOS 27.x tunnel service-port support.
+# Earlier releases create tunnels that cannot forward per-service ports,
+# causing "device channel was not ready" on iOS 27+.
+pymobiledevice3==11.45.0
+
+# TCP tunnel on Python < 3.13 needs PSK support
+sslpsk-pmd3
+
+# For GUI mode
+pywebview==5.4
+pythonnet==3.0.5
+clr-loader==0.2.7.post0
