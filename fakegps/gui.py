@@ -164,6 +164,8 @@ def _device_failure_hint(exc, tunneld_ready):
 
 
 _CONFIG_FILE = Path.home() / ".campusrunning_config.json"
+# Upstream FakeGPS kept its key here; read it so an existing key is not lost.
+_LEGACY_CONFIG_FILE = Path.home() / ".fakegps_config.json"
 
 
 class API:
@@ -457,13 +459,20 @@ class API:
     # ── AMap Key ──
 
     def get_amap_key(self):
-        """Return the saved AMap key (called from JS on init)."""
-        if _CONFIG_FILE.exists():
+        """Return the saved AMap key (called from JS on init).
+
+        Falls back to the upstream FakeGPS config file so an existing key
+        survives the rename to CampusRunning; the next save migrates it.
+        """
+        for path in (_CONFIG_FILE, _LEGACY_CONFIG_FILE):
+            if not path.exists():
+                continue
             try:
-                config = json.loads(_CONFIG_FILE.read_text(encoding="utf-8"))
-                return config.get("amap_key", "")
+                key = json.loads(path.read_text(encoding="utf-8")).get("amap_key", "")
             except Exception:
-                pass
+                continue
+            if key:
+                return key
         return ""
 
     def save_amap_key(self, key):
@@ -478,15 +487,21 @@ class API:
         _CONFIG_FILE.write_text(json.dumps(config, ensure_ascii=False, indent=2), encoding="utf-8")
 
     def clear_amap_key(self):
-        """Remove AMap API key from config."""
-        config = {}
-        if _CONFIG_FILE.exists():
+        """Remove the AMap API key from every config file we read."""
+        for path in (_CONFIG_FILE, _LEGACY_CONFIG_FILE):
+            if not path.exists():
+                continue
             try:
-                config = json.loads(_CONFIG_FILE.read_text(encoding="utf-8"))
+                config = json.loads(path.read_text(encoding="utf-8"))
             except Exception:
-                pass
-        config.pop("amap_key", None)
-        _CONFIG_FILE.write_text(json.dumps(config, ensure_ascii=False, indent=2), encoding="utf-8")
+                continue
+            if "amap_key" in config:
+                config.pop("amap_key", None)
+                try:
+                    path.write_text(
+                        json.dumps(config, ensure_ascii=False, indent=2), encoding="utf-8")
+                except OSError:
+                    pass
 
     # ── Utilities ──
 
